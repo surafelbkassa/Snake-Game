@@ -1,8 +1,8 @@
 const Canvas=document.getElementById('playGround');
 
 const grid=20;
-Canvas.height=300;
-Canvas.width=300;
+Canvas.width = Math.min(window.innerWidth - 20, 300);
+Canvas.height = Math.min(window.innerHeight - 100, 300);
 const row=Canvas.height/grid;
 const column=Canvas.width/grid;
 const ctx=Canvas.getContext("2d");
@@ -17,6 +17,27 @@ let y=Math.floor(Math.random()*column)*grid;
 
 //lengthening the Snake
 let Snake = [{x: x, y: y}];
+
+let score = 0;
+let speed = 150;
+let gameInterval;
+
+let obstacles = [
+    {x: 100, y: 100},
+    {x: 200, y: 200}
+];
+
+function updateScore() {
+    document.getElementById('score').innerText = `Score: ${score}`;
+}
+
+function increaseSpeed() {
+    if (speed > 50) {
+        speed -= 10;
+        clearInterval(gameInterval);
+        gameInterval = setInterval(gameLoop, speed);
+    }
+}
 
 document.addEventListener('keydown',function (event) {
     switch (event.key) {
@@ -55,6 +76,29 @@ function placeApple() {
     ctx.fillRect(v,w,grid,grid);
 }
 placeApple();
+
+function drawObstacles() {
+    ctx.fillStyle = 'gray';
+    obstacles.forEach(obstacle => {
+        ctx.fillRect(obstacle.x, obstacle.y, grid, grid);
+    });
+}
+
+function checkCollision() {
+    for (let i = 0; i < Snake.length - 1; i++) {
+        if (Snake[i].x === x && Snake[i].y === y) {
+            alert(`Game Over! Your score: ${score}`);
+            document.location.reload();
+        }
+    }
+    obstacles.forEach(obstacle => {
+        if (x === obstacle.x && y === obstacle.y) {
+            alert(`Game Over! Your score: ${score}`);
+            document.location.reload();
+        }
+    });
+}
+
 function gameLoop() {
     // First move the snake
     y += dy;
@@ -85,11 +129,23 @@ function gameLoop() {
     ctx.fillStyle = 'red';
     ctx.fillRect(v, w, grid, grid);
     
+    // Draw obstacles
+    drawObstacles();
+    
     // Check for apple collision
     if (x === v && y === w) {
+        score++;
+        updateScore();
         placeApple();
+        increaseSpeed();
     }
+
+    // Check for snake collision
+    checkCollision();
 }
 
+gameInterval = setInterval(gameLoop, speed);
 
-setInterval(gameLoop,150);
+document.getElementById('startButton').addEventListener('click', () => {
+    document.location.reload();
+});

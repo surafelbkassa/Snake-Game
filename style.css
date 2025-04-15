@@ -58,3 +58,24 @@ h1 {
     font-size: 2.5em;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
+
+#score {
+    color: #ecf0f1;
+    font-size: 1.5em;
+    margin-bottom: 20px;
+}
+
+#startButton {
+    padding: 10px 20px;
+    font-size: 1em;
+    color: #ecf0f1;
+    background-color: #e74c3c;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+#startButton:hover {
+    background-color: #c0392b;
+}
